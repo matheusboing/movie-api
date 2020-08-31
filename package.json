@@ -1,0 +1,21 @@
+{
+  "name": "studyjs",
+  "version": "1.0.0",
+  "description": "improve technical knowledge",
+  "main": "index.js",
+  "scripts": {
+    "dev": "node node_modules/nodemon/bin/nodemon"
+  },
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "base-64": "^0.1.0",
+    "debug": "^4.1.1",
+    "express": "^4.17.1",
+    "require-dir": "^1.2.0",
+    "sqlite-sync": "^0.3.9"
+  },
+  "devDependencies": {
+    "nodemon": "^2.0.4"
+  }
+}
