@@ -1,6 +1,6 @@
-const usuarios = require("../usuarios.json");
 const sqlite = require("sqlite-sync");
 const path = require("path");
+const database = require("../db/database");
 
 /**
  * Controller de usuários
@@ -12,8 +12,7 @@ const usuariosController = {
      * @param {*} res Resposta
      */
     getAll(req, res) {
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        const usuarios = sqlite.run("SELECT * FROM usuarios")
+        usuarios = database.select("SELECT * FROM usuarios")        
         res.send(usuarios)
     },
 
@@ -26,8 +25,7 @@ const usuariosController = {
      */
     get(req, res) {
         const usuarioId = req.params.id
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let usuario = sqlite.run(`SELECT * FROM usuarios WHERE id = '${usuarioId}'`)
+        usuario = database.select(`SELECT * FROM usuarios WHERE id = '${usuarioId}'`)
         usuario = usuario[0]
 
         if (!usuario) {
@@ -44,12 +42,11 @@ const usuariosController = {
      * @return o usuário criado
      */
     post(req, res) {
-        const usuario = req.body
+        let usuario = req.body
 
         delete usuario.id
 
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        usuario.id = sqlite.insert("usuarios", usuario)
+        usuario.id = database.insert("usuarios", usuario)
         res.status(201).send(usuario)
     },
 
@@ -64,8 +61,8 @@ const usuariosController = {
     put(req, res) {
         const { id } = req.params
         const body = req.body
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let usuario = sqlite.run(`SELECT id, username, senha FROM usuarios WHERE id = '${body.id}'`)
+        
+        let usuario = database.select(`SELECT id, username, senha FROM usuarios WHERE id = '${body.id}'`)
         usuario = usuario[0]
 
         console.log(usuario)
@@ -80,7 +77,7 @@ const usuariosController = {
 
         usuario.username = body.username
         usuario.senha = body.senha
-        sqlite.update("usuarios", usuario, { id: usuario.id })
+        database.update("usuarios", usuario, { id: usuario.id })
         res.send(usuario)
     },
 

@@ -1,12 +1,11 @@
 const base64 = require("base-64")
-const sqlite = require("sqlite-sync")
-const path = require("path")
+const database = require("../db/database")
+const sqlite = require("sqlite-sync");
 
 const authController = {
     post(req, res) {
         const login = req.body
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let usuario = sqlite.run(`SELECT username, senha FROM usuarios WHERE username = '${login.usuario}'`)
+        let usuario = database.select(`SELECT username, senha FROM usuarios WHERE username = '${login.username}'`)
 
         if(!usuario[0]) {
             return res.status(404).send({error: "Credenciais inválidas"})

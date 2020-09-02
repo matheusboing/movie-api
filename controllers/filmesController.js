@@ -1,5 +1,4 @@
-const sqlite = require("sqlite-sync");
-const path = require("path");
+const database = require("../db/database")
 
 /**
  * Controller de filmes
@@ -12,8 +11,7 @@ const filmesController = {
      * @return Todos os filmes no banco de dados
      */
     getAll(req, res) {
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        const filmes = sqlite.run("SELECT * FROM filmes")
+        const filmes = database.select("SELECT * FROM filmes")
         res.send(filmes);
     },
 
@@ -26,8 +24,7 @@ const filmesController = {
      */
     get(req, res) {
         const id = req.params.id
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let filme = sqlite.run(`SELECT * FROM filmes WHERE id = '${id}'`)
+        let filme = database.select(`SELECT * FROM filmes WHERE id = '${id}'`)
         filme = filme[0]
 
         if (!filme) {
@@ -48,8 +45,7 @@ const filmesController = {
         
         delete filme.id
         
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        filme.id = sqlite.insert("filmes", filme)
+        filme.id = database.insert("filmes", filme)
         res.status(201).send(filme)
     },
 
@@ -64,8 +60,7 @@ const filmesController = {
     put(req, res) {
         const { id } = req.params // Desestruturação de objeto
         const body = req.body
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let filme = sqlite.run(`SELECT id, titulo FROM filmes WHERE id = '${body.id}'`)
+        let filme = database.select(`SELECT id, titulo FROM filmes WHERE id = '${body.id}'`)
         filme = filme[0]
 
         if (parseInt(body.id) !== parseInt(id)) {
@@ -77,7 +72,7 @@ const filmesController = {
         }
 
         filme.titulo = body.titulo
-        sqlite.update("filmes", filme, {id: filme.id})
+        database.update("filmes", filme, {id: filme.id})
         res.send(filme)
     },
 
@@ -90,14 +85,13 @@ const filmesController = {
      */
     delete(req, res) {
         const { id } = req.params
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let filme = sqlite.run(`SELECT id, titulo FROM filmes WHERE id = '${id}'`)
+        let filme = database.select(`SELECT id, titulo FROM filmes WHERE id = '${id}'`)
         filme = filme[0]
         if (!filme) {
             return res.status(404).send({ error: "Filme não encontrado" })
         }
 
-        sqlite.delete("filmes", {id: id})
+        database.delete("filmes", {id: id})
         res.status(204).send()
     }
 }
