@@ -20,17 +20,23 @@ const connSqlite = {
 
     insert(table, data) {
         this.connect()
-        return sqlite.insert(table, data)
+        const resultado = sqlite.insert(table, data)
+        this.disconnect()
+        return resultado
     },
 
     update(table, data, where) {
         this.connect()
-        return sqlite.update(table, data, where)
+        const resultado = sqlite.update(table, data, where)
+        this.disconnect()
+        return resultado
     },
 
     delete(table, where) {
         this.connect()
-        return sqlite.delete(table, where)
+        const resultado = sqlite.delete(table, where)
+        this.disconnect()
+        return resultado
     },
 
     selectFirst(sql) {
