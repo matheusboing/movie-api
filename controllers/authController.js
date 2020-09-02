@@ -1,6 +1,5 @@
 const base64 = require("base-64")
 const database = require("../db/database")
-const sqlite = require("sqlite-sync");
 
 const authController = {
     post(req, res) {

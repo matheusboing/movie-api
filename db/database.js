@@ -18,19 +18,24 @@ const connSqlite = {
         return resultado
     },
 
-    insert(usertable, userbody) {
+    insert(table, data) {
         this.connect()
-        return sqlite.insert(usertable, userbody)
+        return sqlite.insert(table, data)
     },
 
-    update(usertable, userbody, dict) {
+    update(table, data, where) {
         this.connect()
-        return sqlite.update(usertable, userbody, dict)
+        return sqlite.update(table, data, where)
     },
 
-    delete(usertable, dict) {
+    delete(table, where) {
         this.connect()
-        return sqlite.delete(usertable, dict)
+        return sqlite.delete(table, where)
+    },
+
+    selectFirst(sql) {
+        let result = this.select(sql)
+        return result[0]         
     }
 }
 

@@ -25,8 +25,7 @@ const usuariosController = {
      */
     get(req, res) {
         const usuarioId = req.params.id
-        usuario = database.select(`SELECT * FROM usuarios WHERE id = '${usuarioId}'`)
-        usuario = usuario[0]
+        usuario = database.selectFirst(`SELECT * FROM usuarios WHERE id = '${usuarioId}'`)
 
         if (!usuario) {
             return res.status(404).send({ error: "Usuário não encontrado" })
@@ -62,10 +61,7 @@ const usuariosController = {
         const { id } = req.params
         const body = req.body
         
-        let usuario = database.select(`SELECT id, username, senha FROM usuarios WHERE id = '${body.id}'`)
-        usuario = usuario[0]
-
-        console.log(usuario)
+        let usuario = database.selectFirst(`SELECT id, username, senha FROM usuarios WHERE id = '${body.id}'`)
 
         if (parseInt(body.id) !== parseInt(id)) {
             return res.status(400).send({ error: "O ID no corpo da requisição é diferente do ID informado na URL" })
@@ -77,8 +73,8 @@ const usuariosController = {
 
         usuario.username = body.username
         usuario.senha = body.senha
-        database.update("usuarios", usuario, { id: usuario.id })
-        res.send(usuario)
+        database.update("usuarios", usuario, { id: body.id })
+        res.send(usuario)  
     },
 
     /**
@@ -90,15 +86,14 @@ const usuariosController = {
      */
     delete(req, res) {
         const { id } = req.params
-        sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
-        let usuario = sqlite.run(`SELECT * FROM usuarios WHERE id = '${id}'`)
-        usuario = usuario[0]
+        database.connect()
+        let usuario = database.selectFirst(`SELECT * FROM usuarios WHERE id = '${id}'`)
 
         if (!usuario) {
             return res.status(404).send({ error: "Usuário não encontrado" })
         }
 
-        sqlite.delete("usuarios", { id: id })
+        database.delete("usuarios", { id: id })
         res.status(204).send()
     }
 }

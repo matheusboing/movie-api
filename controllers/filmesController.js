@@ -24,8 +24,7 @@ const filmesController = {
      */
     get(req, res) {
         const id = req.params.id
-        let filme = database.select(`SELECT * FROM filmes WHERE id = '${id}'`)
-        filme = filme[0]
+        let filme = database.selectFirst(`SELECT * FROM filmes WHERE id = '${id}'`)
 
         if (!filme) {
             return res.status(404).send({ error: "Filme não encontrado" })
@@ -60,8 +59,7 @@ const filmesController = {
     put(req, res) {
         const { id } = req.params // Desestruturação de objeto
         const body = req.body
-        let filme = database.select(`SELECT id, titulo FROM filmes WHERE id = '${body.id}'`)
-        filme = filme[0]
+        let filme = database.selectFirst(`SELECT id, titulo FROM filmes WHERE id = '${body.id}'`)
 
         if (parseInt(body.id) !== parseInt(id)) {
             return res.status(400).send({ error: "O ID no corpo da requisição é diferente do ID informado na URL" })
@@ -72,7 +70,7 @@ const filmesController = {
         }
 
         filme.titulo = body.titulo
-        database.update("filmes", filme, {id: filme.id})
+        database.update("filmes", filme, {id: body.id})
         res.send(filme)
     },
 
@@ -85,8 +83,8 @@ const filmesController = {
      */
     delete(req, res) {
         const { id } = req.params
-        let filme = database.select(`SELECT id, titulo FROM filmes WHERE id = '${id}'`)
-        filme = filme[0]
+        let filme = database.selectFirs(`SELECT id, titulo FROM filmes WHERE id = '${id}'`)
+
         if (!filme) {
             return res.status(404).send({ error: "Filme não encontrado" })
         }
