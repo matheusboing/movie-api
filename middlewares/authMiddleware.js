@@ -1,6 +1,7 @@
 const sqlite = require("sqlite-sync")
 const base64 = require("base-64") 
 const path = require("path")
+const database = require("../db/database")
 
 /**
  * Middleware de autenticação
@@ -37,16 +38,13 @@ const authMiddleware = function (req, res, next) {
     }
 
     // Obtém o usuário e senha do cabeçalho através de desestruturação do split
-    const [usuario, senha] = authorization.split(":")
-
-    // Conecta no banco de dados
-    sqlite.connect(path.resolve(__dirname, "../database.sqlite"))
+    const [username, senha] = authorization.split(":")
 
     // Procura o usuário
-    let dadosUsuario = sqlite.run(`SELECT username, senha FROM usuarios WHERE username = '${usuario}'`)
+    let usuario = database.selectFirst(`SELECT username, senha FROM usuarios WHERE username = '${username}'`)
 
     // Verifica se o usuário existe e a senha está correta
-    if (!dadosUsuario || !dadosUsuario[0] || dadosUsuario[0].senha != senha) {
+    if (!usuario || usuario.senha != senha) {
         return res.status(401).send()
     }
 
